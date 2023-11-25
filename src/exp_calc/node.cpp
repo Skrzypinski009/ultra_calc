@@ -12,7 +12,7 @@ Node* Node::clear(){
     case NODE_INT:
     case NODE_FLOAT:
     case NODE_STRING:
-    case NODE_ERROR;
+    case NODE_ERROR:
       delete this;
       break;
     case NODE_OPERATOR:
@@ -35,57 +35,47 @@ void printIndent(size_t indent){
 
 void Node::print(size_t indent){
   std::cout <<"{\n";
-  printIndent(indent);
+  printIndent(indent+1);
   std::cout << "type: " << this->type << "\n";
   switch(this->type){
     case NODE_INT:
       printIndent(indent+1);
       std::cout << "value: " << toIntNode(this)->value << "\n";
-      printIndent(indent);
-      std::cout << "}\n";
       break;
     case NODE_FLOAT:
       printIndent(indent+1);
       std::cout << "value: " << toFloatNode(this)->value << "\n";
-      printIndent(indent);
-      std::cout << "}" << "\n";
       break;
     case NODE_STRING:
       printIndent(indent+1);
       std::cout << "value: " << toStringNode(this)->value << "\n";
-      printIndent(indent);
-      std::cout << "}\n";
       break;
     case NODE_OPERATOR:
-      printInden(indent+1);
+      printIndent(indent+1);
       std::cout << "value: " << toOperatorNode(this)->value << "\n";
       printIndent(indent+1);
       std::cout << "left_side: ";
-      toOperatorNode(this)->left_side->print(indent+2);
-      printIndent(indent+1)
+      toOperatorNode(this)->left_side->print(indent+1);
+      printIndent(indent+1);
       std::cout << "right_side: ";
-      toOperatorNode(this)->right_side->print(indent+2);
-      printIndent(indent);
-      std::cout << "}\n";
+      toOperatorNode(this)->right_side->print(indent+1);
       break;
     case NODE_FUNCTION:
       printIndent(indent+1);
       std::cout << "name: " << toFunctionNode(this)->name << std::endl;
       for(Node* arg : toFunctionNode(this)->args){
-        printIndent(indent+1)
+        printIndent(indent+1);
         std::cout << "arg: \n";
-        arg->print(indent+2);
+        arg->print(indent+1);
       }
-      printIndent(indent);
-      std::cout << "}\n";
       break;
     case NODE_ERROR:
       printIndent(indent+1);
       std::cout << "content: " << toErrorNode(this)->content <<std::endl;
-      printIndent(indent);
-      std::cout << "}\n";
       break;
   }
+  printIndent(indent);
+  std::cout << "}\n";
 }
 
 IntNode::IntNode(const int value): Node(NODE_INT){

@@ -74,7 +74,6 @@ Node* Parser::parseAdd(){
     // std::cout<<"RIGHT SIDE\n";
     // right_side->print();
     left_side = new OperatorNode(op, left_side, right_side);
-    std::cout<<"end adding\n";
   }
   // std::cout<<"returning ls\n";
   // left_side->print();
