@@ -12,6 +12,7 @@ Node* Node::clear(){
     case NODE_INT:
     case NODE_FLOAT:
     case NODE_STRING:
+    case NODE_ERROR;
       delete this;
       break;
     case NODE_OPERATOR:
@@ -28,36 +29,61 @@ Node* Node::clear(){
   return nullptr;
 }
 
+void printIndent(size_t indent){
+  std::cout<<std::setw(indent*4)<<"";
+}
+
 void Node::print(size_t indent){
-  std::cout<<"{\n" << std::setw(indent*4) << "" << "type: " << this->type << "\n";
+  std::cout <<"{\n";
+  printIndent(indent);
+  std::cout << "type: " << this->type << "\n";
   switch(this->type){
     case NODE_INT:
-      std::cout << std::setw(indent*4) << "" << " value: " << ((IntNode*)this)->value << "\n"
-        << std::setw(indent*4) << "" << "}" << "\n";
+      printIndent(indent+1);
+      std::cout << "value: " << toIntNode(this)->value << "\n";
+      printIndent(indent);
+      std::cout << "}\n";
       break;
     case NODE_FLOAT:
-      std::cout << std::setw(indent*4) << "" << " value: " << ((FloatNode*)this)->value << "\n"
-        << std::setw(indent*4) << "" << "}" << "\n";
+      printIndent(indent+1);
+      std::cout << "value: " << toFloatNode(this)->value << "\n";
+      printIndent(indent);
+      std::cout << "}" << "\n";
       break;
     case NODE_STRING:
-      std::cout << std::setw(indent*4) << "" << " value: " << ((StringNode*)this)->value << "\n"
-        << std::setw(indent*4) << "" << "}" << "\n";
+      printIndent(indent+1);
+      std::cout << "value: " << toStringNode(this)->value << "\n";
+      printIndent(indent);
+      std::cout << "}\n";
       break;
     case NODE_OPERATOR:
-      std::cout << std::setw(indent*4) << "" << "value: " << ((OperatorNode*)this)->value << "\n";
-      std::cout << std::setw(indent*4) << "" << "left_side: ";
-      ((OperatorNode*)this)->left_side->print(indent+1);
-      std::cout << std::setw(indent*4) << "" << "right_side: ";
-      ((OperatorNode*)this)->right_side->print(indent+1);
-      std::cout << std::setw(indent*4) << "" << "}\n";
+      printInden(indent+1);
+      std::cout << "value: " << toOperatorNode(this)->value << "\n";
+      printIndent(indent+1);
+      std::cout << "left_side: ";
+      toOperatorNode(this)->left_side->print(indent+2);
+      printIndent(indent+1)
+      std::cout << "right_side: ";
+      toOperatorNode(this)->right_side->print(indent+2);
+      printIndent(indent);
+      std::cout << "}\n";
       break;
     case NODE_FUNCTION:
-      std::cout << std::setw(indent*4) << "" << "name: " << ((FunctionNode*)this)->name << std::endl;
-      for(Node* arg : ((FunctionNode*)this)->args){
-        std::cout << std::setw(indent*4) << "" << "arg: \n";
-        arg->print(indent+1);
+      printIndent(indent+1);
+      std::cout << "name: " << toFunctionNode(this)->name << std::endl;
+      for(Node* arg : toFunctionNode(this)->args){
+        printIndent(indent+1)
+        std::cout << "arg: \n";
+        arg->print(indent+2);
       }
-      std::cout << std::setw(indent*4) << "" << "}\n";
+      printIndent(indent);
+      std::cout << "}\n";
+      break;
+    case NODE_ERROR:
+      printIndent(indent+1);
+      std::cout << "content: " << toErrorNode(this)->content <<std::endl;
+      printIndent(indent);
+      std::cout << "}\n";
       break;
   }
 }
@@ -87,8 +113,7 @@ FunctionNode::FunctionNode(const std::string name, const std::vector<Node*> args
   }
 }
 
-ErrorNode::ErrorNode(const size_t error_type, const std::string content) : Node(NODE_ERROR){
-  this->error_type = error_type;
+ErrorNode::ErrorNode(const std::string content) : Node(NODE_ERROR){
   this->content = content;
 }
 

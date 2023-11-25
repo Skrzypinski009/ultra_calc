@@ -49,7 +49,7 @@ struct FunctionNode: public Node{
 
 struct ErrorNode: public Node{
   std::string content;
-  ErrorNode(const size_t error_type, const std::string content);
+  ErrorNode(const std::string content);
 };
 
 IntNode* toIntNode(Node* node);
