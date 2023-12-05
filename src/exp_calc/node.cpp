@@ -36,7 +36,7 @@ void printIndent(size_t indent){
 void Node::print(size_t indent){
   std::cout <<"{\n";
   printIndent(indent+1);
-  std::cout << "type: " << this->type << "\n";
+  std::cout << "type: " << Node::toString(this->type) << "\n";
   switch(this->type){
     case NODE_INT:
       printIndent(indent+1);
@@ -76,6 +76,24 @@ void Node::print(size_t indent){
   }
   printIndent(indent);
   std::cout << "}\n";
+}
+
+std::string Node::toString(const size_t type){
+  switch(type){
+    case NODE_INT:
+      return "Int";
+    case NODE_FLOAT:
+      return "Float";
+    case NODE_STRING:
+      return "String";
+    case NODE_OPERATOR:
+      return "Operator";
+    case NODE_FUNCTION:
+      return "Function";
+    case NODE_ERROR:
+      return "ERROR";
+  }
+  return "wrong_type";
 }
 
 IntNode::IntNode(const int value): Node(NODE_INT){

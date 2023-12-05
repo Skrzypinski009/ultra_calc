@@ -20,7 +20,12 @@ Node* Interpreter::interpret(){
 }
 
 Node* Interpreter::interpretNode(Node* node){
-  if(node->type == NODE_INT || node->type == NODE_FLOAT || node->type == NODE_STRING){
+  if(
+    node->type == NODE_INT || 
+    node->type == NODE_FLOAT || 
+    node->type == NODE_STRING ||
+    node->type == NODE_ERROR
+  ){
     return node;
   } 
   else if(node->type == NODE_OPERATOR){
@@ -71,13 +76,17 @@ int calc_ints(int val1, int val2, char op){
 Node* Interpreter::interpretOperator(OperatorNode* op_node){
   Node* left = op_node->left_side;
   Node* right= op_node->right_side;
-  if(left->type == NODE_INT || left->type == NODE_FLOAT && right->type == NODE_FLOAT || right->type == NODE_INT){
+  if(
+    (left->type == NODE_INT || left->type == NODE_FLOAT) && 
+    (right->type == NODE_FLOAT || right->type == NODE_INT)
+  ){
     if(left->type == NODE_INT && right->type == NODE_INT){
+      std::cout<<"inty\n";
       IntNode* ileft = toIntNode(left);
       IntNode* iright = toIntNode(right);
       if(op_node->value == '/'){
-        if(iright==0){
-          return new IntNode(0);
+        if(iright->value == 0){
+          return new ErrorNode("Can't divide by 0!");
         }
         float result = ileft->value/(float)(iright->value);
         return new FloatNode(result);
@@ -88,6 +97,13 @@ Node* Interpreter::interpretOperator(OperatorNode* op_node){
     else{
       float result = 0;
       // std::cout<<left->type<<", "<<right->type<<std::endl;
+      if(
+        (op_node->value == '/') &&
+        (right->type == NODE_INT && toIntNode(right)->value == 0) ||
+        (right->type == NODE_FLOAT && toFloatNode(right)->value == 0)
+      ){
+        return new ErrorNode("Can't divide by 0!\n");
+      }
       if(left->type == NODE_FLOAT && right->type == NODE_FLOAT) {
         FloatNode* fleft = toFloatNode(left);
         FloatNode* fright = toFloatNode(right);
@@ -109,10 +125,26 @@ Node* Interpreter::interpretOperator(OperatorNode* op_node){
   else if(left->type == NODE_STRING && right->type == NODE_STRING){
     return new StringNode(toStringNode(left)->value + toStringNode(right)->value);
   }
+  else {
+    if(left->type == NODE_ERROR){
+      return new ErrorNode(toErrorNode(left)->content);
+    }
+    if(right->type == NODE_ERROR){
+      return new ErrorNode(toErrorNode(right)->content);
+    }
+  }
+
   using namespace std::string_literals;
-  this->error_message = "You can't make "s + op_node->value + " operation on "s;
-  this->error_message += std::to_string(left->type) + " type and "s + std::to_string(right->type) + " type!\n"s;
-  return nullptr;
+  return new ErrorNode(
+    "Can't make '"s + op_node->value + "' operation on " + 
+    Node::toString(left->type) + " and " + Node::toString(right->type) + "!\n"
+    // Tutaj musi być wyświetlony string z tokenówhile
+    // Tutaj musi być podkreślenie w miejscu w którym aktualnie znajdujemy się w drzewie
+    // To znaczy że obiekty Node muszą mieć jakieś powiązanie z Tokenami
+    // I dzięki temu będziemy w stanie wyświetlić ilość spacji równej długości tokenów przed błędem
+    // A następnie wyświetlić '~' o długości tokenów od początku błędu (left)
+    // do końca błędu (right)
+  );
 }
 
 

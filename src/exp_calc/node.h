@@ -17,6 +17,7 @@ struct Node{
   Node(const size_t type);
   Node* clear();
   void print(size_t indent=0);
+  static std::string toString(const size_t type);
 };
 
 struct IntNode: public Node{
