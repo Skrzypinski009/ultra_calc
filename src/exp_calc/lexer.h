@@ -16,10 +16,11 @@ enum{
 
 struct Token{
   size_t type;
+  size_t col;
   std::optional<std::string> value;
 
   static std::string typeString(const size_t token_type);
-  std::string string();
+  std::string toString();
 };
 
 class Lexer{
@@ -28,6 +29,7 @@ class Lexer{
   size_t idx;
   std::string line;
   std::string error_message;
+  size_t token_start;
 public:
 
   Lexer();

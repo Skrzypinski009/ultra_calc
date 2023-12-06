@@ -17,7 +17,7 @@ std::string Token::typeString(const size_t token_type){
   return s_types[token_type]; 
 }
 
-std::string Token::string(){
+std::string Token::toString(){
   std::string s = "";
   s += std::string("{type: ");
   s += this->typeString(this->type);
@@ -25,6 +25,8 @@ std::string Token::string(){
     s += std::string(",value: ");
     s += *(this->value);
   }
+  s += std::string(", col: ");
+  s += std::to_string(this->col);
   s += "}";
   return s;
 }
@@ -35,6 +37,7 @@ Lexer::Lexer(){
   this->idx = 0;
   this->line = "";
   this->error_message = "";
+  this->token_start = 0;
 }
 
 Lexer::Lexer(const std::string line): Lexer(){
@@ -76,10 +79,12 @@ void Lexer::clearBuffor(){
 void Lexer::createToken(const size_t token_type){
   Token t = Token();
   t.type = token_type;
+  t.col = this->token_start;
   if(this->buffor != "")
     t.value = this->buffor;
   this->tokens.push_back(t);
   this->clearBuffor();
+  this->token_start = this->idx;
 }
 
 void Lexer::eatWord(){
@@ -160,7 +165,8 @@ void Lexer::tokenize(){
       this->createToken(TOKEN_COMMA);
     }
     else if(this->at() == ' ')
-      idx += 1;
+      this->idx += 1;
+      this->token_start = this->idx;
   }
 }
 

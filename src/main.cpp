@@ -16,7 +16,7 @@ int main(){
     return EXIT_FAILURE;
   }
   for(Token t : lexer.getTokens()){
-    std::cout<<t.string()<<std::endl;
+    std::cout<<t.toString()<<std::endl;
   }
   Parser parser(lexer.getTokens());
   parser.parse();
