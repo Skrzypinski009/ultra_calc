@@ -3,8 +3,10 @@
 #include <iostream>
 #include <iomanip>
 
-Node::Node(const size_t type){
+Node::Node(const size_t type, const size_t col, const size_t length){
   this->type = type;
+  this->col = col;
+  this->length = length;
 }
 
 Node* Node::clear(){
@@ -37,6 +39,8 @@ void Node::print(size_t indent){
   std::cout <<"{\n";
   printIndent(indent+1);
   std::cout << "type: " << Node::toString(this->type) << "\n";
+  printIndent(indent+1);
+  std::cout << "col: " << this->col << "\n";
   switch(this->type){
     case NODE_INT:
       printIndent(indent+1);
@@ -72,6 +76,8 @@ void Node::print(size_t indent){
     case NODE_ERROR:
       printIndent(indent+1);
       std::cout << "content: " << toErrorNode(this)->content <<std::endl;
+      printIndent(indent+1);
+      std::cout << "length: " << toErrorNode(this)->length<<std::endl;
       break;
   }
   printIndent(indent);
@@ -96,32 +102,44 @@ std::string Node::toString(const size_t type){
   return "wrong_type";
 }
 
-IntNode::IntNode(const int value): Node(NODE_INT){
+IntNode::IntNode(const size_t col, const int value): Node(NODE_INT, col, std::to_string(value).length()){
   this->value = value;
 }
 
-FloatNode::FloatNode(const float value): Node(NODE_FLOAT){
+IntNode::IntNode(const size_t col, const size_t length, const int value): Node(NODE_INT, col, length){
   this->value = value;
 }
 
-StringNode::StringNode(const std::string value): Node(NODE_STRING){
+FloatNode::FloatNode(const size_t col, const float value): Node(NODE_FLOAT, col, std::to_string(value).length()){
   this->value = value;
 }
 
-OperatorNode::OperatorNode(const char value, Node* left_side, Node* right_side): Node(NODE_OPERATOR){
+FloatNode::FloatNode(const size_t col, const size_t length, const float value): Node(NODE_FLOAT, col, length){
+  this->value = value;
+}
+
+StringNode::StringNode(const size_t col, const std::string value): Node(NODE_STRING, col, value.length()+2){
+  this->value = value;
+}
+
+StringNode::StringNode(const size_t col, const size_t length, const std::string value): Node(NODE_STRING, col, length){
+  this->value = value;
+}
+
+OperatorNode::OperatorNode(const size_t col, const char value, Node* left_side, Node* right_side): Node(NODE_OPERATOR, col, 1){
   this->value = value;
   this->left_side = left_side;
   this->right_side = right_side;
 }
 
-FunctionNode::FunctionNode(const std::string name, const std::vector<Node*> args): Node(NODE_FUNCTION){
+FunctionNode::FunctionNode(const size_t col, const size_t length, const std::string name, const std::vector<Node*> args): Node(NODE_FUNCTION, col, length){
   this->name = name;
   for(Node* arg : args){
     this->args.push_back(arg);
   }
 }
 
-ErrorNode::ErrorNode(const std::string content) : Node(NODE_ERROR){
+ErrorNode::ErrorNode(const size_t col, const size_t length, const std::string content) : Node(NODE_ERROR, col, length){
   this->content = content;
 }
 
@@ -132,7 +150,7 @@ IntNode* toIntNode(Node* node){
   else if(node->type == NODE_FLOAT){
     int value = ((FloatNode*)node)->value;
     delete node;
-    return new IntNode(value);
+    return new IntNode(node->col, value);
   }
   return nullptr;
 }
@@ -143,7 +161,7 @@ FloatNode* toFloatNode(Node* node){
   else if(node->type == NODE_INT){
     float value = ((IntNode*)node)->value;
     delete node;
-    return new FloatNode(value);
+    return new FloatNode(node->col, value);
   }
   return nullptr;
 }

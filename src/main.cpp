@@ -6,6 +6,18 @@
 #include <iostream>
 #include <string>
 
+void printErrorUnderine(const std::string raw_line, const size_t col, const size_t length){
+  std::cout<<raw_line<< '\n';
+  for(size_t i=0; i<raw_line.length(); i++){
+    if(i < col || i > col + length)
+      std::cout<<' ';
+    else{
+      std::cout<<'~';
+    }
+  }
+  std::cout<<'\n';
+}
+
 int main(){
   std::string line;
   std::getline(std::cin, line);
@@ -26,6 +38,9 @@ int main(){
   Node* result = interpreter.interpret();
   std::cout<<"Wynik\n";
   result->print();
+  if(result->type == NODE_ERROR){
+    printErrorUnderine(line, result->col, toErrorNode(result)->length);
+  }
   result->clear();
 
   return EXIT_SUCCESS;
