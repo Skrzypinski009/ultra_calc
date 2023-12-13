@@ -3,12 +3,8 @@
 #include <string>
 
 class Interpreter{
-  Node* node_tree;
-  std::string error_message;
 public:
-  Interpreter();
-  Interpreter(Node* node_tree);
-  Node* interpret();
+  Node* interpret(Node* node_tree);
 private:
   Node* interpretNode(Node* node);
   Node* interpretOperator(OperatorNode* op_node);

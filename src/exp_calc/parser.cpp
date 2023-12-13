@@ -7,10 +7,19 @@
 
 Parser::Parser(){
   this->idx = 0;
+  root_node = nullptr;
 }
 
-Parser::Parser(std::vector<Token> tokens): Parser(){
+Parser::~Parser(){
+  if(root_node != nullptr)
+    root_node->clear();
+}
+
+void Parser::setTokens(const std::vector<Token> tokens){
   this->tokens = tokens;
+  this->idx = 0;
+  if(root_node != nullptr)
+    root_node->clear();
 }
 
 Token Parser::at() const{

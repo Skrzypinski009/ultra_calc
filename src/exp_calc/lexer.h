@@ -33,7 +33,7 @@ class Lexer{
 public:
 
   Lexer();
-  Lexer(const std::string line);
+  void setLine(const std::string line);
   void tokenize();
   std::vector<Token> getTokens() const;
   std::string getErrorMessage() const;

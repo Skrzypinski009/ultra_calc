@@ -40,8 +40,13 @@ Lexer::Lexer(){
   this->token_start = 0;
 }
 
-Lexer::Lexer(const std::string line): Lexer(){
+void Lexer::setLine(const std::string line){
   this->line = line;
+  this->tokens.clear();
+  this->buffor = "";
+  this->idx = 0;
+  this->error_message = "";
+  this->token_start = 0;
 }
 
 std::vector<Token> Lexer::getTokens() const {

@@ -84,6 +84,38 @@ void Node::print(size_t indent){
   std::cout << "}\n";
 }
 
+Node* Node::duplicate(){
+  std::vector<Node*> duplicated_args;
+  switch(this->type){
+    case NODE_INT:
+      return new IntNode(this->col, this->length, toIntNode(this)->value);
+    case NODE_FLOAT:
+      return new FloatNode(this->col, this->length, toFloatNode(this)->value);
+    case NODE_STRING:
+      return new StringNode(this->col, this->length, toStringNode(this)->value);
+    case NODE_OPERATOR:
+      return new OperatorNode(
+        this->col, 
+        toOperatorNode(this)->value, 
+        toOperatorNode(this)->left_side->duplicate(),
+        toOperatorNode(this)->right_side->duplicate()
+      );
+    case NODE_FUNCTION:
+      for(Node* arg : toFunctionNode(this)->args){
+        duplicated_args.push_back(arg->duplicate());
+      }
+      return new FunctionNode(
+        this->col,
+        this->length,
+        toFunctionNode(this)->name,
+        duplicated_args
+      );
+    case NODE_ERROR:
+      return new ErrorNode(this->col, this->length, toErrorNode(this)->content);
+  }
+  return nullptr;
+}
+
 std::string Node::toString(const size_t type){
   switch(type){
     case NODE_INT:
@@ -101,6 +133,21 @@ std::string Node::toString(const size_t type){
   }
   return "wrong_type";
 }
+
+std::string Node::getValueString(){
+  switch(this->type){
+    case NODE_INT:
+      return std::to_string(toIntNode(this)->value);
+    case NODE_FLOAT:
+      return std::to_string(toFloatNode(this)->value);
+    case NODE_STRING:
+      return toStringNode(this)->value;
+    case NODE_ERROR:
+      return toErrorNode(this)->content;
+  }
+  return "";
+}
+
 
 IntNode::IntNode(const size_t col, const int value): Node(NODE_INT, col, std::to_string(value).length()){
   this->value = value;

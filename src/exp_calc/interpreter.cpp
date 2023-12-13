@@ -4,17 +4,10 @@
 #include <string>
 #include <iostream>
 
-Interpreter::Interpreter(){
-  this->node_tree = nullptr;
-}
-
-Interpreter::Interpreter(Node* node_tree){
-  this->node_tree = node_tree; 
-}
-
-Node* Interpreter::interpret(){
-  if(this->node_tree){
-    return interpretNode(this->node_tree);
+Node* Interpreter::interpret(Node* node_tree){
+  Node* node_copy = node_tree->duplicate();
+  if(node_copy){
+    return interpretNode(node_copy);
   }
   return new ErrorNode(0, 0, "Empty tree\n");
 }
@@ -141,12 +134,6 @@ Node* Interpreter::interpretOperator(OperatorNode* op_node){
     right->col + right->length - left->col,
     "Can't make '"s + op_node->value + "' operation on " + 
     Node::toString(left->type) + " and " + Node::toString(right->type) + "!\n"
-    // Tutaj musi być wyświetlony string z tokenówhile
-    // Tutaj musi być podkreślenie w miejscu w którym aktualnie znajdujemy się w drzewie
-    // To znaczy że obiekty Node muszą mieć jakieś powiązanie z Tokenami
-    // I dzięki temu będziemy w stanie wyświetlić ilość spacji równej długości tokenów przed błędem
-    // A następnie wyświetlić '~' o długości tokenów od początku błędu (left)
-    // do końca błędu (right)
   );
 }
 

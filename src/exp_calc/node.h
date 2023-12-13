@@ -19,7 +19,9 @@ struct Node{
   Node(const size_t type, const size_t col, const size_t length);
   Node* clear();
   void print(size_t indent=0);
+  Node* duplicate();
   static std::string toString(const size_t type);
+  std::string getValueString();
 };
 
 struct IntNode: public Node{
