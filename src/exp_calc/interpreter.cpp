@@ -4,12 +4,41 @@
 #include <string>
 #include <iostream>
 
-Node* Interpreter::interpret(Node* node_tree){
-  Node* node_copy = node_tree->duplicate();
-  if(node_copy){
-    return interpretNode(node_copy);
+// Node* Interpreter::interpret(Node* node_tree){
+//   Node* node_copy = node_tree->duplicate();
+//   if(node_copy){
+//     return interpretNode(node_copy);
+//   }
+//   return new ErrorNode(0, 0, "Empty tree\n");
+// }
+
+Interpreter::Interpreter(std::vector<Table*>* tables){
+  this->tables = tables;
+}
+
+Interpreter::~Interpreter(){}
+
+void Interpreter::interpretTables(){
+  for(size_t i=0; i<this->tables->size(); i++){
+    this->interpretTable(this->tables->at(i));
   }
-  return new ErrorNode(0, 0, "Empty tree\n");
+}
+
+void Interpreter::interpretTable(Table* table){
+  for(size_t w=0; w<table->getWidth(); w++){
+    for(size_t h=0; h<table->getHeight(); h++){
+      if(table->getCell(w,h)->getResultNode() == nullptr){
+        this->interpretCell(table, w, h);
+      }
+    }
+  }
+}
+
+void Interpreter::interpretCell(Table* table, const size_t w, const size_t h){
+  if(w < table->getWidth() && h < table->getHeight()){
+    Cell* c = table->getCell(w,h);
+    c->setResultNode(this->interpretNode(c->getParsedExpression()));
+  }
 }
 
 Node* Interpreter::interpretNode(Node* node){

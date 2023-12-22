@@ -33,6 +33,10 @@ std::string Cell::getResultString(){
 
 void Cell::setRawText(const std::string raw_text){
   this->raw_text = raw_text;
+  if(this->parsed_exp != nullptr)
+    this->parsed_exp->clear();
+  if(this->result_node != nullptr)
+    this->result_node->clear();
 }
 
 std::string Cell::getRawText() const{

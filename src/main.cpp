@@ -4,6 +4,7 @@
 #include "exp_calc/interpreter.h"
 #include "workspace/table.h"
 #include "workspace/cell.h"
+#include "workspace/workspace.h"
 
 #include <iostream>
 #include <string>
@@ -23,19 +24,30 @@
 int main(){
   // std::string line;
   // std::getline(std::cin, line);
-  Lexer lexer;
-  Parser parser;
-  Interpreter interpreter;
+  Workspace workspace;
+  workspace.createTable(2,2);
+  workspace.insertText("2 + 2", 0,0,0);
+  workspace.insertText("8*(5+4.4)", 0,1,0);
+  workspace.insertText("(8+8)/3", 0,0,1);
+  workspace.insertText("1/4", 0,1,1);
 
-  Table t1(4,4, &lexer, &parser, &interpreter);
-  Cell* c = t1.getCell(0,0);
-  t1.insertText("4 + 4", 0,0);
-  std::cout<<c->getRawText()<<" = ";
-  std::cout<<t1.getCellResult(0,0)<<"\n";
+  workspace.createTable(2,2);
+  workspace.insertText("10 - 20", 1,0,0);
+  workspace.insertText("8*7*9", 1,1,0);
+  workspace.insertText("121/11", 1,0,1);
+  workspace.insertText("1/8", 1,1,1);
 
-  t1.insertText("4 - 68", 0,0);
-  std::cout<<c->getRawText()<<" = ";
-  std::cout<<t1.getCellResult(0,0)<<"\n";
+
+  workspace.calculate();
+  std::cout<<"Table1\n";
+  workspace.printTableRaw(0);
+  std::cout<<"\n";
+  workspace.printTableCalculated(0);
+  std::cout<<"\n\n";
+  std::cout<<"Table2\n";
+  workspace.printTableRaw(1);
+  std::cout<<"\n";
+  workspace.printTableCalculated(1);
 
   return EXIT_SUCCESS;
 }
