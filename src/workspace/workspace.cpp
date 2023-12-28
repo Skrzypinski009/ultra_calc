@@ -25,20 +25,38 @@ void Workspace::clearTables(){
   for(Table* t : this->tables) delete t;
 }
 
-void Workspace::insertText(const size_t table_id, const size_t w, const size_t h, const std::string text){
-  Table* t = this->getTable(table_id);
-  t->insertText(text, w, h);
-  Cell* c = t->getCell(w, h);
+void Workspace::parseCell(Cell* c){
   if(c->getParsedExpression()){
     c->getParsedExpression()->clear();
   }
-  // std::string text = c->getRawText();
+  std::string text = c->getRawText();
   lexer.setLine(text);
   lexer.tokenize();
   parser.setTokens(lexer.getTokens());
   parser.parse();
   // parser.root_node->print();
   c->setParsedExpression(parser.popRootNode());
+}
+
+void Workspace::insertText(const size_t table_id, const size_t w, const size_t h, const std::string text){
+  Table* t = this->getTable(table_id);
+  t->insertCell(text, w, h);
+  Cell* c = t->getCell(w, h);
+  this->parseCell(c);
+}
+
+void Workspace::insertCol(const size_t table_id, const size_t col, std::string text){
+  Table* t = this->getTable(table_id);
+  t->insertCol(text, col);
+  Cell* c = t->getColCell(col);
+  this->parseCell(c);
+}
+
+void Workspace::insertRow(const size_t table_id, const size_t row, std::string text){
+  Table* t = this->getTable(table_id);
+  t->insertRow(text, row);
+  Cell* c = t->getRowCell(row);
+  this->parseCell(c);
 }
 
 void Workspace::calculate(){

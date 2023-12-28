@@ -25,10 +25,12 @@ int main(){
   Workspace workspace;
   workspace.createTable(2, 4);
   // col 0
-  workspace.insertText(0,0,0, "T+2");   workspace.insertText(0,1,0);
-  workspace.insertText(0,0,1);        workspace.insertText(0,1,1, "TC-R- +3");
-  workspace.insertText(0,0,2);        workspace.insertText(0,1,2, "R- +2");
-  workspace.insertText(0,0,3);        workspace.insertText(0,1,3);
+  workspace.insertCol(0,0, "R- +1");
+  workspace.insertRow(0,0, "C- +1");
+  workspace.insertText(0,0,0, "1");     workspace.insertText(0,1,0);
+  workspace.insertText(0,0,1);          workspace.insertText(0,1,1);
+  workspace.insertText(0,0,2);          workspace.insertText(0,1,2);
+  workspace.insertText(0,0,3);          workspace.insertText(0,1,3);
   // col 1
   
 

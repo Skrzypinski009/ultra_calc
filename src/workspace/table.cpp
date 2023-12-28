@@ -56,11 +56,41 @@ Cell* Table::getCell(const size_t w, const size_t h){
   return &(this->cells[w][h]);
 }
 
-void Table::insertText(const std::string text, const size_t w, const size_t h){
+void Table::insertCell(const std::string text, const size_t w, const size_t h){
   if(!(w < this->width && h < this->height))
     return;
 
   this->cells[w][h].setRawText(text);
+}
+
+void Table::insertCol(const std::string text, const size_t col){
+  if(this->col_cells.find(col) != this->col_cells.end()){
+    this->col_cells.at(col)->setRawText(text);
+    return;
+  }
+  this->col_cells[col] = new Cell(this, text);
+}
+
+void Table::insertRow(const std::string text, const size_t row){
+  if(this->row_cells.find(row) != this->row_cells.end()){
+    this->row_cells.at(row)->setRawText(text);
+    return;
+  }
+  this->row_cells[row] = new Cell(this, text);
+}
+
+Cell* Table::getColCell(const size_t col) const {
+  if(this->col_cells.find(col) != this->col_cells.end()){
+    return (this->col_cells).at(col);
+  }
+  return nullptr;
+}
+
+Cell* Table::getRowCell(const size_t row) const {
+  if(this->row_cells.find(row) != this->row_cells.end()){
+    return (this->row_cells).at(row);
+  }
+  return nullptr;
 }
 
 // void Table::parseCell(const size_t w, const size_t h){
@@ -97,7 +127,15 @@ std::string Table::getCellResult(const size_t w, const size_t h){
 void Table::printTableRaw() const {
   for(size_t h=0; h<this->height; h++){
     for(size_t w=0; w<this->width; w++){
-      std::cout<<this->cells[w][h].getRawText();
+      std::string text = this->cells[w][h].getRawText();
+      if(text == ""){
+        if(this->getColCell(w)){
+          text = getColCell(w)->getRawText();
+        } else if(this->getRowCell(h)){
+          text = getRowCell(h)->getRawText();
+        }
+      }
+      std::cout<<text;
       std::cout<<"  |";
     }
     std::cout<<'\n';

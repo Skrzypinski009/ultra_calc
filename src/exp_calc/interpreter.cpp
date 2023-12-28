@@ -28,11 +28,7 @@ void Interpreter::interpretTable(Table* table){
   for(size_t w=0; w<table->getWidth(); w++){
     for(size_t h=0; h<table->getHeight(); h++){
       Cell* c = table->getCell(w,h);
-      if(c->getResultNode() == nullptr){
-        if(c->getParsedExpression() != nullptr){
-          this->interpretCell(table, w, h);
-        }
-      }
+      this->interpretCell(table, w, h);
     }
   }
 }
@@ -40,7 +36,20 @@ void Interpreter::interpretTable(Table* table){
 void Interpreter::interpretCell(Table* table, const size_t w, const size_t h){
   if(w < table->getWidth() && h < table->getHeight()){
     Cell* c = table->getCell(w,h);
-    c->setResultNode(this->interpretNode(c->getParsedExpression(), table->getId(), w, h));
+    if(c->getParsedExpression() == nullptr){
+      Cell* col_cell = table->getColCell(w);
+      Cell* row_cell = table->getRowCell(h);
+      if(col_cell != nullptr){
+        Node* col_exp = col_cell->getParsedExpression();
+        c->setResultNode(this->interpretNode(col_exp->duplicate(), table->getId(), w, h));
+      } else if(row_cell != nullptr){
+        Node* row_exp = row_cell->getParsedExpression();
+        c->setResultNode(this->interpretNode(row_exp->duplicate(), table->getId(), w, h));
+      }
+    } else {
+      c->setResultNode(this->interpretNode(c->getParsedExpression()->duplicate(), table->getId(), w, h));
+      c->getParsedExpression()->print();
+    }
   }
 }
 
