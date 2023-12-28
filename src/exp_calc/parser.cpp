@@ -67,6 +67,10 @@ bool Parser::mulCondition(){
 }
 
 void Parser::parse(){
+  if(this->tokens.size() == 0){
+    this->root_node = nullptr;
+    return;
+  }
   this->root_node = this->parseAdd();
 }
 

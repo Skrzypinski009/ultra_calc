@@ -26,14 +26,14 @@ int main(){
   workspace.createTable(2, 4);
   // col 0
   workspace.insertText("C+ *2", 0,0,0);
-  workspace.insertText("C+ *2", 0,0,1);
-  workspace.insertText("C+ *2", 0,0,2);
+  workspace.insertText("R- *2", 0,0,1);
+  workspace.insertText("", 0,0,2);
   workspace.insertText("C+ *2", 0,0,3);
   // col 1
   workspace.insertText("1", 0,1,0);
-  workspace.insertText("2", 0,1,1);
-  workspace.insertText("3", 0,1,2);
-  workspace.insertText("4", 0,1,3);
+  workspace.insertText("C- *2", 0,1,1);
+  workspace.insertText("", 0,1,2);
+  workspace.insertText("R-2 * 2", 0,1,3);
 
   workspace.calculate();
   std::cout<<"Table1\n";

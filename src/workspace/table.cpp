@@ -49,6 +49,9 @@ void Table::clearCells(){
 Cell* Table::getCell(const size_t w, const size_t h){
   if(!(w < this->width && h < this->height))
     return nullptr;
+    std::cout<<"Cell out of range\n";
+
+  std::cout<<"Cell "<<w<<" "<<h<<"\n";
   return &(this->cells[w][h]);
 }
 
