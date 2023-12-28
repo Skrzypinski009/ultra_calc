@@ -11,7 +11,8 @@ enum{
   TOKEN_WORD,
   TOKEN_COMMA,
   TOKEN_L_BRACKET,
-  TOKEN_R_BRACKET
+  TOKEN_R_BRACKET,
+  TOKEN_RELATION
 };
 
 struct Token{
@@ -44,6 +45,7 @@ private:
   void eat(); 
   void clearBuffor();
   void eatWord();
+  void eatRel();
   void eatNumber();
   void eatString();
   void eatOperator();

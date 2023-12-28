@@ -11,7 +11,7 @@ Workspace::~Workspace(){
 }
 
 Table* Workspace::createTable(const size_t w, const size_t h){
-  size_t id = this->tables.size() > 0 ? this->tables[this->tables.size()-1]->getId()+1 : 1;
+  size_t id = this->tables.size() > 0 ? this->tables[this->tables.size()-1]->getId()+1 : 0;
   Table* t  = new Table(w, h, id);
   this->tables.push_back(t);
   return t;

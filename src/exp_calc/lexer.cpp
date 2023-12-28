@@ -12,7 +12,8 @@ std::string Token::typeString(const size_t token_type){
     "TOKEN_WORD",
     "TOKEN_COMMA",
     "TOKEN_L_BRACKET",
-    "TOKEN_R_BRACKET"
+    "TOKEN_R_BRACKET",
+    "TOKEN_RELATION"
   };
   return s_types[token_type]; 
 }
@@ -94,9 +95,25 @@ void Lexer::createToken(const size_t token_type){
 
 void Lexer::eatWord(){
   this->eat();
-  while(!this->isEOL() && isalnum(this->at()))
+  while(!this->isEOL() && isalpha(this->at()))
     this->eat();
   this->createToken(TOKEN_WORD);
+}
+
+void Lexer::eatRel(){
+  this->eat();
+    // eating operator
+  if(!this->isEOL() && std::string("+-").find(this->at()) != -1){
+    this->eat();
+  }
+  // eating number
+  if(!this->isEOL() && isdigit(this->at())){
+    this->eat();
+    while(!this->isEOL() && isdigit(this->at())){
+      this->eat();
+    }
+  }
+  this->createToken(TOKEN_RELATION);
 }
 
 void Lexer::eatNumber(){
@@ -117,7 +134,7 @@ void Lexer::eatNumber(){
 }
 
 void Lexer::eatString(){
-  this->eat();
+  this->idx+=1;
   while(!this->isEOL() && isprint(this->at()) && this->at() != '"'){
     this->eat();
   }
@@ -125,6 +142,7 @@ void Lexer::eatString(){
     this->error_message = "Not ending string!";
     return;
   }
+  this->idx+=1;
   this->eat();
   this->createToken(TOKEN_STRING);
 }
@@ -152,24 +170,31 @@ void Lexer::eatBracket(const bool left){
 }
 
 void Lexer::tokenize(){
+  char c;
   while(!this->isEOL() && this->error_message == ""){
-    if(isalpha(this->at()))
-      this->eatWord();
-    else if(isdigit(this->at()))
+    c = this->at();
+    if(isalpha(c)){
+      if(c=='T' || c=='R' || c=='C'){
+        this->eatRel();
+      }
+      else
+        this->eatWord();
+    }
+    else if(isdigit(c))
       this->eatNumber();
-    else if(this->at() == '"')
+    else if(c == '"')
       this->eatString();
-    else if(std::string("+-*/").find(this->at()) != -1)
+    else if(std::string("+-*/").find(c) != -1)
       this->eatOperator();
-    else if(this->at() == '(')
+    else if(c == '(')
       this->eatBracket(true);
-    else if(this->at() == ')')
+    else if(c == ')')
       this->eatBracket(false);
-    else if(this->at() == ','){
+    else if(c == ','){
       this->idx += 1;
       this->createToken(TOKEN_COMMA);
     }
-    else if(this->at() == ' ')
+    else if(c == ' ')
       this->idx += 1;
       this->token_start = this->idx;
   }
@@ -181,4 +206,30 @@ bool Lexer::good(){
   return true;
 }
 
+size_t getRelationFlags(std::string text){
+  size_t flags = 0;
+  for(char c: text){
+    switch(c){
+      case 'T':
+        if((1 & flags)){
+          return 0;
+        }
+        flags += 1;
+        break;
+      case 'R':
+        if((2 & flags)){
+          return 0;
+        }
+        flags += 2;
+        break;
+      case 'C':
+        if((4 & flags)){
+          return 0;
+        }
+        flags += 4;
+        break;
+    }
+  }
+  return flags;
+}
 

@@ -92,8 +92,8 @@ std::string Table::getCellResult(const size_t w, const size_t h){
 }
 
 void Table::printTableRaw() const {
-  for(size_t w=0; w<this->width; w++){
-    for(size_t h=0; h<this->height; h++){
+  for(size_t h=0; h<this->height; h++){
+    for(size_t w=0; w<this->width; w++){
       std::cout<<this->cells[w][h].getRawText();
       std::cout<<"  |";
     }
@@ -102,8 +102,8 @@ void Table::printTableRaw() const {
 }
 
 void Table::printTableCalculated() const {
-  for(size_t w=0; w<this->width; w++){
-    for(size_t h=0; h<this->height; h++){
+  for(size_t h=0; h<this->height; h++){
+    for(size_t w=0; w<this->width; w++){
       std::cout<<this->cells[w][h].getResultString();
       std::cout<<"  |";
     }

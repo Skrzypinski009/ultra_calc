@@ -3,7 +3,7 @@
 #include "node.h"
 #include <string>
 #include <iostream>
-
+#include <cstdlib>
 // Node* Interpreter::interpret(Node* node_tree){
 //   Node* node_copy = node_tree->duplicate();
 //   if(node_copy){
@@ -37,11 +37,11 @@ void Interpreter::interpretTable(Table* table){
 void Interpreter::interpretCell(Table* table, const size_t w, const size_t h){
   if(w < table->getWidth() && h < table->getHeight()){
     Cell* c = table->getCell(w,h);
-    c->setResultNode(this->interpretNode(c->getParsedExpression()));
+    c->setResultNode(this->interpretNode(c->getParsedExpression(), table->getId(), w, h));
   }
 }
 
-Node* Interpreter::interpretNode(Node* node){
+Node* Interpreter::interpretNode(Node* node, const size_t table_id, const size_t w, const size_t h){
   if(
     node->type == NODE_INT || 
     node->type == NODE_FLOAT || 
@@ -52,8 +52,8 @@ Node* Interpreter::interpretNode(Node* node){
   } 
   else if(node->type == NODE_OPERATOR){
     OperatorNode* op = toOperatorNode(node);
-    op->left_side = this->interpretNode(op->left_side);
-    op->right_side = this->interpretNode(op->right_side);
+    op->left_side = this->interpretNode(op->left_side, table_id, w, h);
+    op->right_side = this->interpretNode(op->right_side, table_id, w, h);
     Node* result = this->interpretOperator(op);
     op->clear();
     return result;
@@ -62,8 +62,62 @@ Node* Interpreter::interpretNode(Node* node){
     FunctionNode* func = toFunctionNode(node);
     std::vector<Node*> r_args;
     for(Node* arg: func->args){
-      r_args.push_back(interpretNode(arg));
+      r_args.push_back(interpretNode(arg, table_id, w, h));
     }
+  } else if(node->type == NODE_RELATION){
+    RelationNode* rel = toRelationNode(node);
+    size_t r = h;
+    size_t c = w;
+    size_t t = table_id;
+    //table
+    if(rel->t_val[0] == '+'){
+      if(rel->t_val.length() == 1)
+        t += 1;
+      else
+        t += std::stoi(rel->t_val.substr(1,rel->t_val.length()));
+    } else if(rel->t_val[0] == '-'){
+      if(rel->t_val.length() == 1)
+        t -= 1;
+      else
+        t -= std::stoi(rel->t_val.substr(1,rel->t_val.length()));
+    } else{
+      t = std::stoi(rel->t_val);
+    }
+    // row
+    if(rel->r_val[0] == '+'){
+      if(rel->r_val.length() == 1)
+        r += 1;
+      else
+        r += std::stoi(rel->r_val.substr(1,rel->r_val.length()));
+    } else if(rel->r_val[0] == '-'){
+      if(rel->r_val.length() == 1)
+        r -= 1;
+      else
+        r -= std::stoi(rel->r_val.substr(1,rel->r_val.length()));
+    } else{
+      r = std::stoi(rel->r_val);
+    }
+    // column
+    if(rel->c_val[0] == '+'){
+      if(rel->c_val.length() == 1)
+        c += 1;
+      else
+        c += std::stoi(rel->c_val.substr(1,rel->c_val.length()));
+    } else if(rel->c_val[0] == '-'){
+      if(rel->c_val.length() == 1)
+        c -= 1;
+      else
+        c -= std::stoi(rel->c_val.substr(1,rel->c_val.length()));
+    } else{
+      c = std::stoi(rel->c_val);
+    }
+    Cell* cell = this->tables->at(t)->getCell(c, r);
+    Node* n = cell->getResultNode()->duplicate();
+    if(n) return n;
+
+    this->interpretCell(this->tables->at(t), c, r);
+    return cell->getResultNode()->duplicate();
+
   }
   return nullptr;
 }

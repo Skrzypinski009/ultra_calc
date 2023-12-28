@@ -14,6 +14,6 @@ public:
   void interpretTable(Table*);
   void interpretCell(Table* table, const size_t w, const size_t h);
 private:
-  Node* interpretNode(Node* node);
+  Node* interpretNode(Node* node, const size_t table_id, const size_t w, const size_t h);
   Node* interpretOperator(OperatorNode* op_node);
 };

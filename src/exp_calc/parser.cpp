@@ -132,6 +132,26 @@ Node* Parser::parseFactor(){
         std::cout<<"no r bracket error at " << this->idx-1 <<"! \n";
       }
       break;
+    case TOKEN_RELATION:{
+      std::string t = "+0";
+      std::string r = "+0";
+      std::string c = "+0";
+      size_t end=0;
+      while(!this->isEOL() && this->at().type == TOKEN_RELATION){
+        std::string rel = *(this->at().value);
+        std::string val;
+        if(rel.length() > 1){
+          val = rel.substr(1, rel.length());
+          if(rel[0] == 'T') t = val;
+          else if(rel[0] == 'R') r = val;
+          else if(rel[0] == 'C') c = val;
+        }
+        end = this->at().col + rel.length();
+        this->eat(TOKEN_RELATION);
+      }
+      left_side = new RelationNode(col, end, t, r, c);
+    }
+    break;
     case TOKEN_WORD:
       std::string name = *(this->at().value);
       this->eat();
@@ -145,6 +165,6 @@ Node* Parser::parseFactor(){
       left_side = new FunctionNode(col, end-col, name, args);
       break;
   }
-  // std::cout<<"returning factor\n";
+          // std::cout<<"returning factor\n";
   return left_side;
 }

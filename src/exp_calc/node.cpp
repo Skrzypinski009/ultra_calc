@@ -15,6 +15,7 @@ Node* Node::clear(){
     case NODE_FLOAT:
     case NODE_STRING:
     case NODE_ERROR:
+    case NODE_RELATION:
       delete this;
       break;
     case NODE_OPERATOR:
@@ -73,6 +74,14 @@ void Node::print(size_t indent){
         arg->print(indent+1);
       }
       break;
+    case NODE_RELATION:
+      printIndent(indent+1);
+      std::cout<<"t_val: " << toRelationNode(this)->t_val<<std::endl;
+      printIndent(indent+1);
+      std::cout<<"r_val: " << toRelationNode(this)->r_val<<std::endl;
+      printIndent(indent+1);
+      std::cout<<"c_val: " << toRelationNode(this)->c_val<<std::endl;
+      break;
     case NODE_ERROR:
       printIndent(indent+1);
       std::cout << "content: " << toErrorNode(this)->content <<std::endl;
@@ -93,6 +102,14 @@ Node* Node::duplicate(){
       return new FloatNode(this->col, this->length, toFloatNode(this)->value);
     case NODE_STRING:
       return new StringNode(this->col, this->length, toStringNode(this)->value);
+    case NODE_RELATION:
+      return new RelationNode(
+        this->col, 
+        this->length, 
+        toRelationNode(this)->t_val,
+        toRelationNode(this)->r_val,
+        toRelationNode(this)->c_val
+      );
     case NODE_OPERATOR:
       return new OperatorNode(
         this->col, 
@@ -128,6 +145,8 @@ std::string Node::toString(const size_t type){
       return "Operator";
     case NODE_FUNCTION:
       return "Function";
+    case NODE_RELATION:
+      return "Relation";
     case NODE_ERROR:
       return "ERROR";
   }
@@ -186,6 +205,18 @@ FunctionNode::FunctionNode(const size_t col, const size_t length, const std::str
   }
 }
 
+RelationNode::RelationNode(
+  const size_t col, 
+  const size_t length, 
+  const std::string t_val, 
+  const std::string r_val, 
+  const std::string c_val
+): Node(NODE_RELATION, col, length){
+  this->t_val = t_val;
+  this->r_val = r_val;
+  this->c_val = c_val;
+}
+
 ErrorNode::ErrorNode(const size_t col, const size_t length, const std::string content) : Node(NODE_ERROR, col, length){
   this->content = content;
 }
@@ -228,6 +259,12 @@ OperatorNode* toOperatorNode(Node* node){
 FunctionNode* toFunctionNode(Node* node){
   if(node->type == NODE_FUNCTION)
     return (FunctionNode*)node;
+  return nullptr;
+}
+
+RelationNode* toRelationNode(Node* node){
+  if(node->type == NODE_RELATION)
+    return (RelationNode*)node;
   return nullptr;
 }
 

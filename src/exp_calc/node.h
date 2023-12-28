@@ -9,7 +9,8 @@ enum {
   NODE_STRING,
   NODE_OPERATOR,
   NODE_FUNCTION,
-  NODE_ERROR
+  NODE_ERROR,
+  NODE_RELATION
 };
 
 struct Node{
@@ -55,6 +56,19 @@ struct FunctionNode: public Node{
   FunctionNode(const size_t col, const size_t length, const std::string name, const std::vector<Node*> args);
 };
 
+struct RelationNode: public Node{
+  std::string t_val;
+  std::string r_val;
+  std::string c_val;
+  RelationNode(
+    const size_t col, 
+    const size_t length, 
+    const std::string t_val, 
+    const std::string r_val, 
+    const std::string c_val
+  );
+};
+
 struct ErrorNode: public Node{
   std::string content;
   ErrorNode(const size_t col, const size_t length, const std::string content);
@@ -65,4 +79,5 @@ FloatNode* toFloatNode(Node* node);
 StringNode* toStringNode(Node* node);
 OperatorNode* toOperatorNode(Node* node);
 FunctionNode* toFunctionNode(Node* node);
+RelationNode* toRelationNode(Node* node);
 ErrorNode* toErrorNode(Node* node);
