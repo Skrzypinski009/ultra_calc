@@ -94,7 +94,6 @@ void Node::print(size_t indent){
 }
 
 Node* Node::duplicate(){
-  std::vector<Node*> duplicated_args;
   switch(this->type){
     case NODE_INT:
       return new IntNode(this->col, this->length, toIntNode(this)->value);
@@ -117,7 +116,8 @@ Node* Node::duplicate(){
         toOperatorNode(this)->left_side->duplicate(),
         toOperatorNode(this)->right_side->duplicate()
       );
-    case NODE_FUNCTION:
+    case NODE_FUNCTION:{
+      std::vector<Node*> duplicated_args;
       for(Node* arg : toFunctionNode(this)->args){
         duplicated_args.push_back(arg->duplicate());
       }
@@ -127,6 +127,7 @@ Node* Node::duplicate(){
         toFunctionNode(this)->name,
         duplicated_args
       );
+    }
     case NODE_ERROR:
       return new ErrorNode(this->col, this->length, toErrorNode(this)->content);
   }

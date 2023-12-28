@@ -49,7 +49,6 @@ void Table::clearCells(){
 Cell* Table::getCell(const size_t w, const size_t h){
   if(!(w < this->width && h < this->height))
     return nullptr;
-
   return &(this->cells[w][h]);
 }
 

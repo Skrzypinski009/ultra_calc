@@ -27,8 +27,11 @@ void Interpreter::interpretTables(){
 void Interpreter::interpretTable(Table* table){
   for(size_t w=0; w<table->getWidth(); w++){
     for(size_t h=0; h<table->getHeight(); h++){
-      if(table->getCell(w,h)->getResultNode() == nullptr){
-        this->interpretCell(table, w, h);
+      Cell* c = table->getCell(w,h);
+      if(c->getResultNode() == nullptr){
+        if(c->getParsedExpression() != nullptr){
+          this->interpretCell(table, w, h);
+        }
       }
     }
   }
@@ -111,13 +114,22 @@ Node* Interpreter::interpretNode(Node* node, const size_t table_id, const size_t
     } else{
       c = std::stoi(rel->c_val);
     }
-    Cell* cell = this->tables->at(t)->getCell(c, r);
-    Node* n = cell->getResultNode()->duplicate();
-    if(n) return n;
+    Table* table = this->tables->at(t);
+    // std::cout<<"t:"<<t<<" r:"<<r<<" c:"<<c<<"\n";
+    Cell* cell = table->getCell(c, r);
 
-    this->interpretCell(this->tables->at(t), c, r);
-    return cell->getResultNode()->duplicate();
+    Node* res_n = cell->getResultNode();
+    if(res_n != nullptr) 
+    {
+      Node* n = res_n->duplicate(); //error
+      return n;
+    }
 
+    if(cell->getParsedExpression() != nullptr){
+      this->interpretCell(this->tables->at(t), c, r);
+      return cell->getResultNode()->duplicate();
+    }
+    return new ErrorNode(rel->col, rel->length, "Relation Error");
   }
   return nullptr;
 }
