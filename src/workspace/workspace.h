@@ -16,7 +16,7 @@ public:
   Table* getTable(const size_t idx) const;
   void clearTables();
   void calculate();
-  void insertText(const std::string text, const size_t table_id, const size_t w, const size_t h);
+  void insertText(const size_t table_id, const size_t w, const size_t h, const std::string text = "");
   void printTableRaw(const size_t table_id) const; 
   void printTableCalculated(const size_t table_id) const; 
 };

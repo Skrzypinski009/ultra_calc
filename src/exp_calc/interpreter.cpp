@@ -114,13 +114,21 @@ Node* Interpreter::interpretNode(Node* node, const size_t table_id, const size_t
     } else{
       c = std::stoi(rel->c_val);
     }
+    if(this->tables->size() <= t)
+      return new ErrorNode(rel->col, rel->length, "Cell is out of range");
     Table* table = this->tables->at(t);
-    // std::cout<<"t:"<<t<<" r:"<<r<<" c:"<<c<<"\n";
+
+    if(table->getWidth() <= c || table->getHeight() <= r)
+      return new ErrorNode(rel->col, rel->length, "Cell is out of range");
     Cell* cell = table->getCell(c, r);
 
     Node* res_n = cell->getResultNode();
+    
     if(res_n != nullptr) 
     {
+      if(res_n->type == NODE_ERROR){
+        return new ErrorNode(rel->col, rel->length, "Relation has Error");
+      }
       Node* n = res_n->duplicate(); //error
       return n;
     }

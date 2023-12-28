@@ -25,7 +25,7 @@ void Workspace::clearTables(){
   for(Table* t : this->tables) delete t;
 }
 
-void Workspace::insertText(const std::string text, const size_t table_id, const size_t w, const size_t h){
+void Workspace::insertText(const size_t table_id, const size_t w, const size_t h, const std::string text){
   Table* t = this->getTable(table_id);
   t->insertText(text, w, h);
   Cell* c = t->getCell(w, h);
