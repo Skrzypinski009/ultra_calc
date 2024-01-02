@@ -1,6 +1,7 @@
 #include "interpreter.h"
 #include "../utils/utils.h"
 #include "node.h"
+#include "function_manager.h"
 #include <string>
 #include <iostream>
 #include <cstdlib>
@@ -76,6 +77,7 @@ Node* Interpreter::interpretNode(Node* node, const size_t table_id, const size_t
     for(Node* arg: func->args){
       r_args.push_back(interpretNode(arg, table_id, w, h));
     }
+    return FunctionManager::getFunction(func->name)->run(r_args);
   } else if(node->type == NODE_RELATION){
     RelationNode* rel = toRelationNode(node);
     size_t r = h;

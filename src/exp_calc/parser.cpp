@@ -159,14 +159,18 @@ Node* Parser::parseFactor(){
     case TOKEN_WORD:
       std::string name = *(this->at().value);
       this->eat();
-      std::vector<Node*> args;
-      while(this->at().type == TOKEN_COMMA || this->at().type == TOKEN_L_BRACKET){
+      if(this->at().type == TOKEN_L_BRACKET){
+        std::vector<Node*> args;
+        while(this->at().type == TOKEN_COMMA || this->at().type == TOKEN_L_BRACKET){
+          this->eat();
+          args.push_back(this->parseAdd());
+        }
+        size_t end = this->idx;
         this->eat();
-        args.push_back(this->parseAdd());
+        left_side = new FunctionNode(col, end-col, name, args);
+      } else {
+        //variable
       }
-      size_t end = this->idx;
-      this->eat();
-      left_side = new FunctionNode(col, end-col, name, args);
       break;
   }
           // std::cout<<"returning factor\n";
