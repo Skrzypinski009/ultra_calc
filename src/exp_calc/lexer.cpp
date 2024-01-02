@@ -1,7 +1,10 @@
 #include <cctype>
 #include <iostream>
+#include <algorithm>
 #include "lexer.h"
 #include "../utils/utils.h"
+
+std::vector<std::string> Token::operators = {"+", "-", "*", "/", "&"};
 
 std::string Token::typeString(const size_t token_type){
   std::string s_types[] = {
@@ -89,7 +92,7 @@ void Lexer::createToken(const size_t token_type){
   if(this->buffor != "")
     t.value = this->buffor;
   this->tokens.push_back(t);
-  // std::cout<<t.toString()<<"\n";
+  std::cout<<t.toString()<<std::endl;
   this->clearBuffor();
   this->token_start = this->idx;
 }
@@ -148,11 +151,11 @@ void Lexer::eatString(){
 }
 
 void Lexer::eatOperator(){
+  std::cout<<"eating op"<<std::endl;
   this->eat();
-  while(!this->isEOL() && std::string("+-*/").find(this->at()) != -1)
-    this->eat();
-  std::vector<std::string> operators = {"+", "-", "*", "/"};
-  if(uc::find(operators, this->buffor))
+  // while(!this->isEOL() && std::find(Token::operators.begin(), Token::operators.end(), std::to_string(this->at())))
+  //   this->eat();
+  if(std::find(Token::operators.begin(), Token::operators.end(), this->buffor) != Token::operators.end())
     this->createToken(TOKEN_OPERATOR);
   else{
     this->error_message = "There is no operator ";
@@ -169,11 +172,21 @@ void Lexer::eatBracket(const bool left){
   this->createToken(TOKEN_R_BRACKET);
 }
 
+std::string ctos(const char& c){
+  char cs[1] = {c};
+  return std::string(cs);
+}
+
 void Lexer::tokenize(){
-  char c;
+  char c = ' ';
+  
   while(!this->isEOL() && this->error_message == ""){
     c = this->at();
-    if(isalpha(c)){
+    if(c == ' '){
+      this->idx += 1;
+      this->token_start = this->idx;
+    }
+    else if(isalpha(c)){
       if(c=='T' || c=='R' || c=='C'){
         this->eatRel();
       }
@@ -184,7 +197,11 @@ void Lexer::tokenize(){
       this->eatNumber();
     else if(c == '"')
       this->eatString();
-    else if(std::string("+-*/").find(c) != -1)
+    else if(
+        std::find(
+          Token::operators.begin(), Token::operators.end(), ctos(c)
+        ) != Token::operators.end()
+      )
       this->eatOperator();
     else if(c == '(')
       this->eatBracket(true);
@@ -194,9 +211,8 @@ void Lexer::tokenize(){
       this->idx += 1;
       this->createToken(TOKEN_COMMA);
     }
-    else if(c == ' ')
-      this->idx += 1;
-      this->token_start = this->idx;
+    else
+      this->error_message = "this is nothing";
   }
 }
 

@@ -18,6 +18,7 @@ enum{
 struct Token{
   size_t type;
   size_t col;
+  static std::vector<std::string> operators;
   std::optional<std::string> value;
 
   static std::string typeString(const size_t token_type);

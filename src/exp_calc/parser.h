@@ -20,8 +20,10 @@ private:
   bool eat(size_t token_type);
   bool isEOL();
   
+  bool altCondition();
   bool addCondition();
   bool mulCondition();
+  Node* parseAlt();
   Node* parseAdd();
   Node* parseMul();
   Node* parseFactor();

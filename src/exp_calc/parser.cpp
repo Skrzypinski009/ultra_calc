@@ -48,6 +48,14 @@ Node* Parser::popRootNode(){
   return root_node;
 }
 
+bool Parser::altCondition(){
+  return (!this->isEOL()) && 
+    (
+      this->at().type == TOKEN_OPERATOR && 
+      *(this->at().value) == "&"
+    );
+}
+
 bool Parser::addCondition(){
   return !this->isEOL() && 
     (
@@ -60,8 +68,8 @@ bool Parser::addCondition(){
 bool Parser::mulCondition(){
   return !this->isEOL() &&
     (
-      (this->at().type == TOKEN_OPERATOR && 
-      *(this->at().value) == "*") || 
+      this->at().type == TOKEN_OPERATOR && 
+      *(this->at().value) == "*" || 
       *(this->at().value) == "/"
     );
 }
@@ -71,7 +79,20 @@ void Parser::parse(){
     this->root_node = nullptr;
     return;
   }
-  this->root_node = this->parseAdd();
+  this->root_node = this->parseAlt();
+}
+
+Node* Parser::parseAlt(){
+  Node* left_side = this->parseAdd();
+
+  while(this->altCondition()){
+    char op = (*(this->at().value))[0];
+    size_t col = this->at().col;
+    this->eat();
+    Node* right_side = this->parseAlt();
+    left_side = new OperatorNode(col, op, left_side, right_side);
+  }
+  return left_side;
 }
 
 Node* Parser::parseAdd(){
@@ -131,7 +152,7 @@ Node* Parser::parseFactor(){
       break;
     case TOKEN_L_BRACKET:
       this->eat();
-      left_side = this->parseAdd();
+      left_side = this->parseAlt();
       if(!this->eat(TOKEN_R_BRACKET)){
         std::cout<<"no r bracket error at " << this->idx-1 <<"! \n";
       }
@@ -163,7 +184,7 @@ Node* Parser::parseFactor(){
         std::vector<Node*> args;
         while(this->at().type == TOKEN_COMMA || this->at().type == TOKEN_L_BRACKET){
           this->eat();
-          args.push_back(this->parseAdd());
+          args.push_back(this->parseAlt());
         }
         size_t end = this->idx;
         this->eat();

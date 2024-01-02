@@ -6,7 +6,7 @@ std::map<std::string, std::shared_ptr<Function>> FunctionManager::functions = {
 };
 
 Function* FunctionManager::getFunction(const std::string name){
-  if (auto search = functions.find(name); search != functions.end())
+  if (functions.find(name) != functions.end())
     return functions.at(name).get();
   return nullptr;
 }

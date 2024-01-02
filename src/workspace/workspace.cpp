@@ -1,5 +1,6 @@
 #include "workspace.h"
 #include "table.h"
+#include <iostream>
 
 
 Workspace::Workspace() : interpreter(&tables){
@@ -32,6 +33,10 @@ void Workspace::parseCell(Cell* c){
   std::string text = c->getRawText();
   lexer.setLine(text);
   lexer.tokenize();
+  if(!lexer.good()){
+    std::cout<<lexer.getErrorMessage()<<std::endl;
+  }
+  
   parser.setTokens(lexer.getTokens());
   parser.parse();
   // parser.root_node->print();

@@ -185,6 +185,10 @@ int calc_ints(int val1, int val2, char op){
 Node* Interpreter::interpretOperator(OperatorNode* op_node){
   Node* left = op_node->left_side;
   Node* right= op_node->right_side;
+  if(op_node->value == '&'){
+    if (left->type == NODE_ERROR) return right->duplicate();
+    return left->duplicate();
+  }
   if(
     (left->type == NODE_INT || left->type == NODE_FLOAT) && 
     (right->type == NODE_FLOAT || right->type == NODE_INT)
