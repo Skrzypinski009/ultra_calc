@@ -1,1 +1,1 @@
-g++ -std=c++17 src/main.cpp src/*/*.cpp
+g++ -std=c++23 src/main.cpp src/*/*.cpp
