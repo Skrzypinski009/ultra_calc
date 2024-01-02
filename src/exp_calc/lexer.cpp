@@ -89,6 +89,7 @@ void Lexer::createToken(const size_t token_type){
   if(this->buffor != "")
     t.value = this->buffor;
   this->tokens.push_back(t);
+  // std::cout<<t.toString()<<"\n";
   this->clearBuffor();
   this->token_start = this->idx;
 }
@@ -135,15 +136,14 @@ void Lexer::eatNumber(){
 
 void Lexer::eatString(){
   this->idx+=1;
-  while(!this->isEOL() && isprint(this->at()) && this->at() != '"'){
+  while((!this->isEOL()) && isprint(this->at()) && this->at() != '"'){
     this->eat();
   }
-  if(this->isEOL() || this->at() != '"'){
+  if(this->isEOL() || this->at() != '\"'){
     this->error_message = "Not ending string!";
     return;
   }
   this->idx+=1;
-  this->eat();
   this->createToken(TOKEN_STRING);
 }
 
