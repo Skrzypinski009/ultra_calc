@@ -84,3 +84,9 @@ Table* Workspace::createTableFromCSV(const std::string& csv_path){
   return table;
 }
 
+void Workspace::saveTableCSV(const std::string& csv_path, Table* table, const bool raw){
+  std::vector<std::string>* lines = uc::csv::getLines(table, raw);
+  uc::csv::saveTable(csv_path, lines);
+  delete lines;
+}
+

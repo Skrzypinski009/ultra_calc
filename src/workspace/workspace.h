@@ -25,4 +25,5 @@ public:
   void printTableRaw(const size_t table_id) const; 
   void printTableCalculated(const size_t table_id) const; 
   Table* createTableFromCSV(const std::string& csv_path);
+  void saveTableCSV(const std::string& csv_path, Table* table, const bool raw);
 };

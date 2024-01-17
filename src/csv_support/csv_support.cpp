@@ -6,7 +6,9 @@
 #include <vector>
 #include <fstream>
 #include <ranges>
+#include <numeric>
 #include <iostream>
+#include <string_view>
 
 
 std::vector<std::string>* uc::csv::getLines(std::string csv_path){
@@ -43,4 +45,26 @@ Table* uc::csv::createTable(std::vector<std::string>* lines, Workspace* workspac
   }
   return table;
 }
+std::vector<std::string>* uc::csv::getLines(Table* table, const bool raw){
+  std::vector<std::string>* lines = new std::vector<std::string>;
+  std::string buffor;
+  for(size_t ih: std::views::iota(0, (int)table->getHeight())){
+    for(size_t iw: std::views::iota(0, (int)table->getWidth())){
+      if(raw)
+        buffor += table->getCell(iw, ih)->getRawText();
+      else
+        buffor += table->getCell(iw, ih)->getResultString();
+      buffor += ';';
+    }
+    lines->push_back(buffor.substr(0, buffor.length()-1));
+    buffor.clear();
+  }
+  return lines;
+}
 
+void uc::csv::saveTable(const std::string& path, std::vector<std::string>* lines){
+  { std::ofstream file(path);
+    for(std::string line : *lines)
+      file << line << '\n';
+  }
+}

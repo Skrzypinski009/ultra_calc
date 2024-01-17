@@ -26,13 +26,14 @@ int main(){
   // workspace.createTable(2, 4);
   // workspace.insertCol(0,0, "R- +1 & 1");
   // workspace.insertCol(0,1, "C- / 4");
-  workspace.createTableFromCSV("/home/marek/Dokumenty/cpp/ULTRA_CALC/src/csv_example.csv");
+  Table* tab = workspace.createTableFromCSV("/home/marek/Dokumenty/cpp/ULTRA_CALC/src/csv_example.csv");
   workspace.calculate();
   std::cout<<"Table1\n";
   workspace.printTableRaw(0);
 
   std::cout<<"\n";
   workspace.printTableCalculated(0);
+  workspace.saveTableCSV("/home/marek/Dokumenty/cpp/ULTRA_CALC/src/csv_result.csv", tab, false);
 
   return EXIT_SUCCESS;
 }
