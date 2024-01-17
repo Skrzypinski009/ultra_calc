@@ -2,7 +2,6 @@
 #include <iostream>
 #include <algorithm>
 #include "lexer.h"
-#include "../utils/utils.h"
 
 std::vector<std::string> Token::operators = {"+", "-", "*", "/", "&"};
 
@@ -92,7 +91,7 @@ void Lexer::createToken(const size_t token_type){
   if(this->buffor != "")
     t.value = this->buffor;
   this->tokens.push_back(t);
-  std::cout<<t.toString()<<std::endl;
+  // std::cout<<t.toString()<<std::endl;
   this->clearBuffor();
   this->token_start = this->idx;
 }
@@ -151,7 +150,7 @@ void Lexer::eatString(){
 }
 
 void Lexer::eatOperator(){
-  std::cout<<"eating op"<<std::endl;
+  // std::cout<<"eating op"<<std::endl;
   this->eat();
   // while(!this->isEOL() && std::find(Token::operators.begin(), Token::operators.end(), std::to_string(this->at())))
   //   this->eat();

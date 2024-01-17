@@ -1,6 +1,7 @@
 #include "workspace.h"
 #include "table.h"
 #include <iostream>
+#include "../csv_support/csv_support.h"
 
 
 Workspace::Workspace() : interpreter(&tables){
@@ -75,3 +76,11 @@ void Workspace::printTableRaw(const size_t table_id) const {
 void Workspace::printTableCalculated(const size_t table_id) const {
   this->getTable(table_id)->printTableCalculated();
 }
+
+Table* Workspace::createTableFromCSV(const std::string& csv_path){
+  std::vector<std::string>* lines = uc::csv::getLines(csv_path);
+  Table* table = uc::csv::createTable(lines, this);
+  delete lines;
+  return table;
+}
+

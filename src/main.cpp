@@ -23,14 +23,10 @@
 
 int main(){
   Workspace workspace;
-  workspace.createTable(2, 4);
-  // col 0
-  workspace.insertCol(0,0, "R- +1 & 1");
-  workspace.insertCol(0,1, "C- / 4");
-  // workspace.insertText(0,0,0, "5/0 & 2");     
-  // col 1
-  // workspace.insertText(0,1,0, "\"tekst\"");
-
+  // workspace.createTable(2, 4);
+  // workspace.insertCol(0,0, "R- +1 & 1");
+  // workspace.insertCol(0,1, "C- / 4");
+  workspace.createTableFromCSV("/home/marek/Dokumenty/cpp/ULTRA_CALC/src/csv_example.csv");
   workspace.calculate();
   std::cout<<"Table1\n";
   workspace.printTableRaw(0);

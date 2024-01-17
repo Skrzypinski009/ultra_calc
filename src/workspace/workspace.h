@@ -1,8 +1,10 @@
 #pragma once
+class Workspace;
 #include "table.h"
 #include "../exp_calc/lexer.h"
 #include "../exp_calc/parser.h"
 #include "../exp_calc/interpreter.h"
+#include "../csv_support/csv_support.h"
 
 class Workspace{
   std::vector<Table*> tables;
@@ -22,4 +24,5 @@ public:
   void insertRow(const size_t table_id, const size_t row, const std::string text = "");
   void printTableRaw(const size_t table_id) const; 
   void printTableCalculated(const size_t table_id) const; 
+  Table* createTableFromCSV(const std::string& csv_path);
 };

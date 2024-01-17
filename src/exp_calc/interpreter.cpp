@@ -1,5 +1,4 @@
 #include "interpreter.h"
-#include "../utils/utils.h"
 #include "node.h"
 #include "function_manager.h"
 #include <string>
@@ -49,7 +48,7 @@ void Interpreter::interpretCell(Table* table, const size_t w, const size_t h){
       }
     } else {
       c->setResultNode(this->interpretNode(c->getParsedExpression()->duplicate(), table->getId(), w, h));
-      c->getParsedExpression()->print();
+      // c->getParsedExpression()->print();
     }
   }
 }
