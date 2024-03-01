@@ -117,12 +117,31 @@ Cell* Table::getRowCell(const size_t row) const {
 //   );
 // }
 //
+// std::string Table::getCellRaw(const size_t w, const size_t h){
+//   if(!(w < this->width && h < this->height))
+//     return "";
+//
+//   return this->cells[w][h].getRawText();
+// }
+//
 std::string Table::getCellResult(const size_t w, const size_t h){
   if(!(w < this->width && h < this->height))
     return "";
 
   return this->cells[w][h].getResultString();
 }
+
+// vector<std::string> getRowRaw(const size_t row){
+// 	vector<std::string> row(this->widht);
+// 	for(size_t w=0; w<this->width; w++){
+// 		row[w] = this->getCellRaw(w, h);
+// 	}
+// 	return row;
+// }
+//
+// vector<std::string> getRowResult(const size_t row){
+//
+// }
 
 void Table::printTableRaw() const {
   for(size_t h=0; h<this->height; h++){

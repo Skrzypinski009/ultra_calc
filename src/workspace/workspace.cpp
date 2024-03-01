@@ -23,6 +23,10 @@ Table* Workspace::getTable(const size_t idx) const{
    return idx < this->tables.size() ? this->tables[idx] : nullptr;
 }
 
+size_t Workspace::countTables(){
+	return this->tables.size();
+}
+
 void Workspace::clearTables(){
   for(Table* t : this->tables) delete t;
 }
@@ -37,7 +41,7 @@ void Workspace::parseCell(Cell* c){
   if(!lexer.good()){
     std::cout<<lexer.getErrorMessage()<<std::endl;
   }
-  
+
   parser.setTokens(lexer.getTokens());
   parser.parse();
   // parser.root_node->print();

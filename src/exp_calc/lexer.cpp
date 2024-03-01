@@ -17,7 +17,7 @@ std::string Token::typeString(const size_t token_type){
     "TOKEN_R_BRACKET",
     "TOKEN_RELATION"
   };
-  return s_types[token_type]; 
+  return s_types[token_type];
 }
 
 std::string Token::toString(){
@@ -171,14 +171,13 @@ void Lexer::eatBracket(const bool left){
   this->createToken(TOKEN_R_BRACKET);
 }
 
-std::string ctos(const char& c){
-  char cs[1] = {c};
-  return std::string(cs);
+std::string ctos(const char c){
+  return std::string(1, c);
 }
 
 void Lexer::tokenize(){
   char c = ' ';
-  
+
   while(!this->isEOL() && this->error_message == ""){
     c = this->at();
     if(c == ' '){
@@ -210,8 +209,11 @@ void Lexer::tokenize(){
       this->idx += 1;
       this->createToken(TOKEN_COMMA);
     }
-    else
-      this->error_message = "this is nothing";
+    else{
+      this->error_message = "this is nothing ERROR \n" ;
+			std::cout<<"error: this is nothing: " << ctos(c) << "\n";
+
+		}
   }
 }
 

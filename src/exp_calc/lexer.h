@@ -43,7 +43,7 @@ public:
 private:
   char at() const;
   bool isEOL() const;
-  void eat(); 
+  void eat();
   void clearBuffor();
   void eatWord();
   void eatRel();

@@ -16,14 +16,15 @@ public:
   ~Workspace();
   Table* createTable(const size_t w, const size_t h);
   Table* getTable(const size_t idx) const;
+	size_t countTables();
   void clearTables();
   void calculate();
   void parseCell(Cell* c);
   void insertText(const size_t table_id, const size_t w, const size_t h, const std::string text = "");
   void insertCol(const size_t table_id, const size_t col, const std::string text = "");
   void insertRow(const size_t table_id, const size_t row, const std::string text = "");
-  void printTableRaw(const size_t table_id) const; 
-  void printTableCalculated(const size_t table_id) const; 
+  void printTableRaw(const size_t table_id) const;
+  void printTableCalculated(const size_t table_id) const;
   Table* createTableFromCSV(const std::string& csv_path);
   void saveTableCSV(const std::string& csv_path, Table* table, const bool raw);
 };

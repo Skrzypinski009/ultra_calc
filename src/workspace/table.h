@@ -28,7 +28,10 @@ public:
   void insertRow(const std::string text, const size_t row);
   // void parseCell(const size_t w, const size_t h);
   // void interpretCell(const size_t w, const size_t h);
+	// std::string getCellRaw(const size_t w, const size_t h);
   std::string getCellResult(const size_t w, const size_t h);
+	// vector<std::string> getRowRaw(const size_t row);
+	// vector<std::string> getRowResult(const size_t row);
   void printTableRaw() const;
   void printTableCalculated() const;
 };
